@@ -20,42 +20,29 @@ import cl.perfulandia.reportes.repository.ReporteClientesRegistradosRepository;
 // Marca la clase como un componente de servicio de Spring
 @Service
 public class ReporteClientesRegistradosService {
-
-    // Inyección del repositorio para acceder y guardar reportes en la base de datos
     @Autowired
     private ReporteClientesRegistradosRepository reporteRepo;
-
-    // Inyección de RestTemplate para hacer peticiones HTTP a otros microservicios
-    @Autowired
+    @Autowired// Inyección de RestTemplate para hacer peticiones HTTP a otros microservicios
     private RestTemplate restTemplate;
-
-    // Método principal que genera y guarda un reporte de clientes registrados
     public ReporteClientesRegistrados generarReporteClientesRegistrados() {
-        // URL del microservicio de usuarios (ajusta el puerto si tu microservicio de usuarios corre en otro)
-        String usuariosServiceUrl = "http://localhost:8080/usuarios";
-        
+
+        String usuariosServiceUrl = "http://localhost:8080/usuarios";// URL del microservicio de usuarios 
         // Realiza una petición GET para obtener la lista de usuarios como una lista de UsuarioDTO
         ResponseEntity<List<UsuarioDTO>> response = restTemplate.exchange(
                 usuariosServiceUrl,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<UsuarioDTO>>() {}
-        );
-        
-        // Extrae la lista de usuarios de la respuesta
-        List<UsuarioDTO> usuarios = response.getBody();
+                new ParameterizedTypeReference<List<UsuarioDTO>>() {});
 
+        List<UsuarioDTO> usuarios = response.getBody(); // Extrae la lista de usuarios de la respuesta
         // Cuenta cuántos usuarios tienen el rol "CLIENTE"
         int totalClientes = (int) usuarios.stream()
                 .filter(u -> u.getRol() != null && "CLIENTE".equalsIgnoreCase(u.getRol().getNombre()))
                 .count();
 
-        // Crea una nueva entidad ReporteClientesRegistrados con la información del reporte
         ReporteClientesRegistrados reporte = new ReporteClientesRegistrados();
         reporte.setTotalClientes(totalClientes); // Asigna la cantidad de clientes encontrados
         reporte.setFechaGeneracion(LocalDateTime.now()); // Asigna la fecha y hora actual
-        
-        // Guarda el reporte en la base de datos y lo retorna
         return reporteRepo.save(reporte);
     }
 
