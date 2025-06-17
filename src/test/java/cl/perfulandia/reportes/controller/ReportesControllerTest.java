@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cl.perfulandia.reportes.model.ReporteClientesRegistrados;
 import cl.perfulandia.reportes.service.ReporteClientesRegistradosService;
@@ -26,9 +25,6 @@ public class ReportesControllerTest {
 
     @MockBean
     private ReporteClientesRegistradosService service; // Crea un mock del servicio
-
-    @Autowired
-    private ObjectMapper objectMapper; // Convierte objetos Java a JSON
 
     private ReporteClientesRegistrados reporte;
 
